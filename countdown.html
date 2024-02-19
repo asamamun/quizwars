@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h3 id="cd"></h3>
+    <script>
+        // Function to start the countdown timer
+function startCountdown(targetTime) {
+    // Get the target time in milliseconds
+    const targetTimestamp = new Date(targetTime).getTime();
+
+    // Update the countdown every second
+    const countdownInterval = setInterval(() => {
+        // Get the current time in milliseconds
+        const currentTime = new Date().getTime();
+
+        // Calculate the difference between current time and target time
+        const difference = targetTimestamp - currentTime;
+
+        // Calculate hours, minutes, and seconds
+        const hours = Math.floor(difference / (1000 * 60 * 60));
+        const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+        // Display the countdown
+        document.getElementById("cd").innerHTML = `Countdown: ${hours}h ${minutes}m ${seconds}s`;
+        console.log(`Countdown: ${hours}h ${minutes}m ${seconds}s`);
+
+        // If the countdown is finished, clear the interval
+        if (difference <= 0) {
+            clearInterval(countdownInterval);
+            console.log("Countdown finished!");
+        }
+    }, 1000); // Update every second
+}
+
+// Example usage: Countdown to February 20, 2024 12:00:00
+const targetTime = "2024-02-19T13:00:00";
+startCountdown(targetTime);
+
+    </script>
+</body>
+</html>

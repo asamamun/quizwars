@@ -131,6 +131,12 @@ html;
                         <div id="questions">
                             <ul id="setList"></ul>
                         </div>
+                        <input type="text" placeholder="Quiz Title" class="form-control">
+                        <textarea name="details" id="details" class="form-control"></textarea>
+                        <input type="number" placeholder="total Quiz" class="form-control" value="" id="totQuiz">
+                        <input type="datetime-local" name="starttime" id="starttime">
+                        <input type="datetime-local" name="endtime" id="endtime">
+                        <button id="createQuizSetBtn" class="btn btn-outline-primary">Create Quiz Set</button>
                     </div>
                 </div>
             </main>
@@ -206,30 +212,35 @@ if (!isItemInCart(itemToAdd.id, cart)) {
 // Function to display all items in the cart
 function displayCartItems() {
     const cart = getCartFromLocalStorage();
-    let html = "<h3>Total: " + cart.total + "</h3>";
-    console.log(cart); 
+    // console.log("test"  + cart );
+    $("#totQuiz").val(cart.length);
+    let html = "<h3>Total: " + cart.length + "</h3>";
+    // console.log(cart); 
     // return;
     if (cart.length === 0) {
         console.log('The cart is empty.');
+        $("#setList").html(html);
     } else {
         console.log('Items in the cart:');
         cart.forEach(item => {
             // console.log(`ID: ${item.id}, Name: ${item.name}`);
-            html += `<li>${item.id}<span class="removequiz p-3" data-id="${item.id}">&times</span></li>`;
+            html += `<li>${item.id}<span class="btn btn-warning removequiz" data-id="${item.id}">&times</span></li>`;
         });
         $("#setList").html(html);
     }
 }
 // Function to remove an item from the cart by its ID
 function removeItemFromCart(itemId) {
+
     let cart = getCartFromLocalStorage();
     
     // Find the index of the item with the given ID
     const index = cart.findIndex(item => item.id === itemId);
-    
+    alert(index);
     if (index !== -1) {
         // Remove the item from the cart array
         cart.splice(index, 1);
+        // console.log(cart);
         // Update the cart in local storage
         localStorage.setItem('cart', JSON.stringify(cart));
         console.log(`Item with ID ${itemId} removed from the cart.`);
@@ -243,7 +254,9 @@ function removeItemFromCart(itemId) {
 
 
 $("#questions").on("click",".removequiz",function(){
-    if(removeItemFromCart($(this).data("id"))) displayCartItems();
+    // alert($(this).data("id")); return;
+    removeItemFromCart($(this).data("id")); 
+    displayCartItems();
 })
 
 
