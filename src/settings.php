@@ -2,7 +2,7 @@
 if (!function_exists('settings')) {
     function settings()
     {
-       $root = "http://localhost/ROUND57/PHP/QuizWars/"; 
+       $root = "http://localhost/ROUND57/PHP/Online_Exam_App/"; 
         return [
             'root'  => $root,
             'companyname'=> 'Gold Digger Enterprise',
@@ -25,7 +25,7 @@ if (!function_exists('testfunc')) {
 }
 if (!function_exists('config')) {
     function config($param)
-    {        
+    {            
       $parts = explode(".",$param);
       $inc = include(__DIR__."/../config/".$parts[0].".php");
       return $inc[$parts[1]];
