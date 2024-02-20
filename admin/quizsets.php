@@ -34,7 +34,7 @@ $db = new MysqliDb();
         <?php require __DIR__ . '/components/sidebar.php'; ?>
         <div id="layoutSidenav_content">
             <!-- main start here -->
-            <main class="container col-md-9">
+            <main class="container col-md-12">
                 <div class="row">
                     <div class="col-md-12">
                         <form id="quizform" action="" method="post" class="border border-primary-subtle p-3 card card-hover">
@@ -56,6 +56,7 @@ $db = new MysqliDb();
                             </h1>
                             <div class="form-group">
                                 <select name="category_id" class="form-select p-2" id="category_id" required>
+                                <option value="-1">Select</option>
                                     <?php
                                     $category_details = $db->get("categories");
                                     foreach ($category_details as $category_detail) {
@@ -76,7 +77,7 @@ $db = new MysqliDb();
                                 </select>
                             </div><br>
                             <div class="form-group">
-                                <button class="btn btn-outline-info m-auto d-block">Show Questions</button>
+                                <button type="submit" name="submit" value="serchq" class="btn btn-outline-info m-auto d-block">Show Questions</button>
                             </div>
                         </form>
                     </div>
@@ -84,11 +85,18 @@ $db = new MysqliDb();
                 <!-- question and quizset container -->
                 <div class="row">
                     <div class="col-8">
-                        <h3>Quizzes</h3>
-                        <div id="quizContainer">
-                        <?php
+                        <h3 class="mb-3">Quizzes</h3>
+                        <div id="quizContainer" class="border border-primary-subtle p-3 card card-hover">
+<?php
+if(isset($_POST['submit']) && $_POST['submit'] == "serchq"){
+    $cat = $_POST['category_id'];
+    $sub = $_POST['subcategory_id'];
+    $sql = "SELECT * FROM quizes WHERE category_id IN({$cat}) AND subcategory_id IN({$sub})";
+    $quizes = $db->query($sql);
+}else{
+    $quizes = $db->get("quizes");
+}
 $i=0;
-$quizes = $db->get('quizes');
 foreach($quizes as $quize){
     $i++;
     echo <<<html
@@ -101,20 +109,20 @@ foreach($quizes as $quize){
             <h5 class="card-title">{$i}. {$quize['question']}</h5>
             <ol type="a">
                 <li>
-                    <input type="radio" id="{$quize['unique_key']}op1" name="{$quize['unique_key']}" value="{$quize['op1']}" style="display:none;"/>
-                    <label for="{$quize['unique_key']}op1">{$quize['op1']}</label>
+                    <input type="radio" id="{$quize['id']}op1" name="{$quize['id']}" value="{$quize['op1']}" style="display:none;"/>
+                    <label for="{$quize['id']}op1">{$quize['op1']}</label>
                 </li>
                 <li>
-                    <input type="radio" id="{$quize['unique_key']}op2" name="{$quize['unique_key']}" value="{$quize['op2']}" style="display:none;"/>
-                    <label for="{$quize['unique_key']}op2">{$quize['op2']}</label>
+                    <input type="radio" id="{$quize['id']}op2" name="{$quize['id']}" value="{$quize['op2']}" style="display:none;"/>
+                    <label for="{$quize['id']}op2">{$quize['op2']}</label>
                 </li>
                 <li>
-                    <input type="radio" id="{$quize['unique_key']}op3" name="{$quize['unique_key']}" value="{$quize['op3']}" style="display:none;"/>
-                    <label for="{$quize['unique_key']}op3">{$quize['op3']}</label>
+                    <input type="radio" id="{$quize['id']}op3" name="{$quize['id']}" value="{$quize['op3']}" style="display:none;"/>
+                    <label for="{$quize['id']}op3">{$quize['op3']}</label>
                 </li>
                 <li>
-                    <input type="radio" id="{$quize['unique_key']}op4" name="{$quize['unique_key']}" value="{$quize['op4']}" style="display:none;"/>
-                    <label for="{$quize['unique_key']}op4">{$quize['op4']}</label>
+                    <input type="radio" id="{$quize['id']}op4" name="{$quize['id']}" value="{$quize['op4']}" style="display:none;"/>
+                    <label for="{$quize['id']}op4">{$quize['op4']}</label>
                 </li>
             </ol>
             <a href="javascript:void(0)" data-quizid="{$quize['id']}" class="btn btn-primary AddToSet">Add</a>
@@ -127,16 +135,24 @@ html;
                         </div>
                     </div>
                     <div class="col-4">
-                        <h3>Quiz Set Questions</h3>
-                        <div id="questions">
-                            <ul id="setList"></ul>
-                        </div>
-                        <input type="text" placeholder="Quiz Title" class="form-control">
-                        <textarea name="details" id="details" class="form-control"></textarea>
-                        <input type="number" placeholder="total Quiz" class="form-control" value="" id="totQuiz">
-                        <input type="datetime-local" name="starttime" id="starttime">
-                        <input type="datetime-local" name="endtime" id="endtime">
-                        <button id="createQuizSetBtn" class="btn btn-outline-primary">Create Quiz Set</button>
+                        <form id="formoOPtion">
+                            <h3 class="mb-3">Quiz Set Questions</h3>
+                            <div id="questions" class="border border-primary-subtle p-3 card card-hover mb-3">
+                                <ul id="setList"></ul>
+                            Category Id:  <input type="text" id="qs_cat" readonly>
+                            Subcategory Id:<input type="text" id="qs_subcat" readonly>
+                            Title:
+                            <input type="text" placeholder="Quiz Title" class="form-control mb-3" name="title" id="title">
+                            Description: 
+                            <textarea name="details" id="descriptions" class="form-control mb-3" name="descriptions"></textarea>
+                            <input type="number" placeholder="total Quiz" class="form-control mb-3" name="totalquiz" id="totalquiz">
+                            Quiz Start Time
+                            <input type="datetime-local" name="start_time" id="start_time" class=" mb-3">
+                            Quiz End Time
+                            <input type="datetime-local" name="end_time" id="end_time" class=" mb-3">
+                            </div>
+                            <button type="button" id="createQuizSetBtn" class="btn btn-outline-warning m-auto d-block">Create Quiz Set</button>
+                        </form>
                     </div>
                 </div>
             </main>
@@ -155,7 +171,7 @@ html;
     <script src="<?= settings()['adminpage'] ?>assets/demo/chart-bar-demo.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
     <script src="<?= settings()['adminpage'] ?>assets/js/datatables-simple-demo.js"></script> -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="<?php echo settings()['root'] ?>assets/js/jquery-3.7.1.min.js"></script>    
     <script src="<?php echo settings()['adminpage'] ?>assets/js/index.js"></script>
     <script>
         $(document).ready(function() {
@@ -163,9 +179,14 @@ html;
             // localStorage.clear();
             $("#category_id").change(function() {
                 let c = $(this).val();
+                $("#qs_cat").val(c);                
                 $("#subcategory_id option").hide();
                 $("#subcategory_id option[parent="+c+"]").show();
                 $("#subcategory_id").val("-1");
+            });
+            $("#subcategory_id").change(function() {
+                let c = $(this).val();
+                $("#qs_subcat").val(c);
             });
 
             //
@@ -214,7 +235,7 @@ function displayCartItems() {
     const cart = getCartFromLocalStorage();
     // console.log("test"  + cart );
     $("#totQuiz").val(cart.length);
-    let html = "<h3>Total: " + cart.length + "</h3>";
+    let html = "";
     // console.log(cart); 
     // return;
     if (cart.length === 0) {
@@ -229,6 +250,14 @@ function displayCartItems() {
         $("#setList").html(html);
     }
 }
+function clearCart() {
+    // Clear the cart array
+    const cart = [];
+    // Update the cart in local storage
+    localStorage.setItem('cart', JSON.stringify(cart));
+    $("#setList").html("");
+    console.log('Cart cleared.');
+}
 // Function to remove an item from the cart by its ID
 function removeItemFromCart(itemId) {
 
@@ -236,7 +265,7 @@ function removeItemFromCart(itemId) {
     
     // Find the index of the item with the given ID
     const index = cart.findIndex(item => item.id === itemId);
-    alert(index);
+    //alert(index);
     if (index !== -1) {
         // Remove the item from the cart array
         cart.splice(index, 1);
@@ -263,6 +292,30 @@ $("#questions").on("click",".removequiz",function(){
 //cart end
 
 
+$("#formoOPtion").on("click", "#createQuizSetBtn", function(){
+    let ids = "";
+    const cart = getCartFromLocalStorage();
+    // console.log(cart); return;
+/*     cart.forEach(item => {
+        ids += item.id+" ";
+    }); */
+    $.post("quizes_submit.php",
+    {
+        ids: cart,
+        cat: $("#qs_cat").val(),
+        subcat: $("#qs_subcat").val(),
+        title: $('#title').val(),
+        descriptions: $('#descriptions').val(),
+        totalquiz: $('#totalquiz').val(),
+        start_time: $('#start_time').val(),
+        end_time: $('#end_time').val(),
+    },
+    function(data, status){
+        console.log(data); 
+        alert("Data: " + data + "\nStatus: " + status);
+        clearCart();
+    });
+});
 
 
 

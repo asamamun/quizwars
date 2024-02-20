@@ -108,6 +108,7 @@ if (isset($_POST['submit'])) {
                             </h1>
                             <div class="form-group">
                                 <select name="category_id" class="form-control p-2" id="category_id" required onChange="actionFunb()">
+                                    <option value="-1">Select</option>
                                     <?php
                                     $category_details = $db->get("categories");
                                     foreach ($category_details as $category_detail) {
@@ -117,7 +118,9 @@ if (isset($_POST['submit'])) {
                                 </select>
                             </div><br>
                             <div class="form-group">
-                                <input type="text" placeholder="sub category id" name="subCategory_id" class="form-control" required>
+                                <select name="subCategory_id" class="form-control p-2" id="subCategory_id" required>
+                                    <option value="-1">Select</option>
+                                </select>
                             </div><br>
                             <div class="form-group">
                                 <textarea class="form-control" name="questionDescrip" id="" rows="5" placeholder="Question Description" required></textarea>
@@ -202,15 +205,15 @@ if (isset($_POST['submit'])) {
             //     var answer = $('#correct_answer').prop("placeholder", value);
             // })
 
-            $( "#quizform" ).on( "submit", function( event ) {
+            $("#quizform").on("submit", function(event) {
                 let ca = $('input[name="options"]:checked').val();
                 alert(ca);
                 if (typeof ca === "undefined") {
                     Swal.fire("Please Select Correct Answer!");
-                    event.preventDefault();  
-                }               
+                    event.preventDefault();
+                }
 
-});
+            });
 
             // function check(t){
             //     let ca = $('input[name="options"]:checked').val();
@@ -259,6 +262,16 @@ if (isset($_POST['submit'])) {
         // })
     </script>
     <script src="assets/js/scripts.js"></script> -->
+    <script>
+        function actionFunb() {
+            $cat_id_send = document.getElementById("category_id").value;
+            fetch(`quize_api.php?category_id=${$cat_id_send}`).then(x => x.text()).then(y => myDisplay(y));
+
+            function myDisplay(data) {
+                document.getElementById("subCategory_id").innerHTML = data;
+            }
+        }
+    </script>
 </body>
 
 </html>

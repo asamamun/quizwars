@@ -49,6 +49,7 @@ if (isset($_POST['addnew'])) {
                     <div>
                         <label for="categoryName" class="form-label"><b>Select Category Name:</b></label>
                         <select name="category_name" id="cat_id" class="w-100 p-3">
+                            <option value="-1">Select</option>
                             <?php
                             $categories = $db->get('categories');
                             foreach ($categories as $category) {

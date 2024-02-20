@@ -1,5 +1,5 @@
 <?php
 return [
-    'round'=>57,
-    'course'=>'WDPF'
+    'round' => 57,
+    'course' => 'QUIZ WARS'
 ];
